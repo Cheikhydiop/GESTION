@@ -12,11 +12,11 @@ session_start();
 //controle de saisi
 if(isset($valider)){
      if($salaire<0)$msg="<li>nombre invalide</li>"."<br/>";
-     if($busnes) $msg.="<li>nombre invalide</li>"."<br/>";
-     if($loyer) $msg.="<li>nombre invalide</li>"."<br/>";
-     if($manger) $msg.="<li>nombre invalide</li>"."<br/>";
-     if($autre) $msg.="<li>nombre invalide</li>"."<br/>";
-     if($trans) $msg.="<li>nombre invalide</li>"."<br/>";
+     if($busnes<0) $msg.="<li>nombre invalide</li>"."<br/>";
+     if($loyer<0) $msg.="<li>nombre invalide</li>"."<br/>";
+     if($manger<0) $msg.="<li>nombre invalide</li>"."<br/>";
+     if($autre<0) $msg.="<li>nombre invalide</li>"."<br/>";
+     if($trans<0) $msg.="<li>nombre invalide</li>"."<br/>";
      if($msg){  
 
         //connexion du base de donnee et rattrapage des erreur
