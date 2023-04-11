@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+//recuperationdes donnee
 @$salaire= ($_POST['salaire']);
 @$busnes=($_POST['busnes']);
 @$loyer=( $_POST['loyer']);
@@ -9,9 +9,27 @@ session_start();
 @$autre=($_POST['autre']);
 @$valider=$_POST['valider'];
 @$msg="";
+//controle de saisi
 if(isset($valider)){
+     if($salaire<0)$msg="<li>nombre invalide</li>"."<br/>";
+     if($busnes) $msg.="<li>nombre invalide</li>"."<br/>";
+     if($loyer) $msg.="<li>nombre invalide</li>"."<br/>";
+     if($manger) $msg.="<li>nombre invalide</li>"."<br/>";
+     if($autre) $msg.="<li>nombre invalide</li>"."<br/>";
+     if($trans) $msg.="<li>nombre invalide</li>"."<br/>";
+     if($msg){  
 
-    include('connexion.php');
+        //connexion du base de donnee et rattrapage des erreur
+  
+      try{
+     
+    $pdo= new PDO("mysql:host=localhost;dbname=ressource","root","");
+          }
+    catch(PDOException $e){
+       echo "erreur:".$e->getMessage();
+    }
+       //manipulation des donnee
+   
     $ins=$pdo->prepare("insert into gestion(date,salaire,busness,loyer,manger,transport,autres,date) values(now(),?,?,?,?,?,?)");
     $ins->execute(array($salaire,$busnes,$loyer,$manger,$trans,$autre));
     $revenu= $pdo->prepare("SELECT SUM(salaire)+SUM(busness) FROM gestion");
@@ -21,10 +39,7 @@ if(isset($valider)){
     $depense->execute();
     $r = $revenu->fetchAll(PDO::FETCH_NUM);
     $d = $depense->fetchAll(PDO::FETCH_NUM);
-    $t=$r[0][0]+$d[0][0];
-    $pr=($r[0][0]/$t)*100;
-    $pd=($d[0][0]/$t)*100;
-   
+    //test des resultats
     $resultat=$r[0][0]-$d[0][0];
      if( $resultat>0){
         $msg="Votre revenu est superieur a votre depense avec une ecart de ".$resultat;
@@ -34,12 +49,8 @@ if(isset($valider)){
      elseif($resultat=0){
       $msg="Votre depense est egal a votre revenu avec une ecart de ".$resultat;
      }
-    
-     
-
-             
-  }
-
+   }
+}
 
 
 ?>
@@ -47,56 +58,9 @@ if(isset($valider)){
 <html>
     <head>
         <metacharset="utf-8">
-        <style>
-            *{
-
-                font-size:30px;
-                font-family:titillium;
-                background:url("back.jpg");
-
-            }
-            body{
-                margin:opx;
-               
-            }
-          section{
-            display:flex;
-            align-items:center;
-            heignt:100hv;
-            justify-content:center;
-            background-size:cover;
-            background: url("auto.jpg");
-          }
-          form{
-            
-            background-color:white;
-            padding: 150px;
-            border-radius :25px;
-
-          }
-          input{
-            display:block;
-            width: 120px;
-            outline:none;
-            margin: auto;
-            box-sizing:border-box;
-          }
-          input[type="submit"]{
-                cursor:pointer;
-                background-color:green;
-              }
-         .c{
-          margin-left:1000px;
-          text-decoration:none;
-          background-color:yellow;
-          font-size:15px;
-          
-         }
-         a:hover{
-          color:red;
-         }
-          
-        </style>
+      
+       
+     
     </head>
 
 <body>
@@ -104,7 +68,7 @@ if(isset($valider)){
   <FIeldset>
    
         <legend style="text-align:center"></legend>
-    <section id="id">
+    
 <form method="POST" action="">
     <table border=1>
         <tr>
@@ -126,12 +90,7 @@ if(isset($valider)){
     </table>
      <input type="submit" name="valider" value="VALIDER"  placeholder="VALIDER">
         
-<label for="id" >Repense<label>    
-<progress id="id" value="<?= $pr ?>" max="100"> $pb</progress><br>
-<label for="il" color="green">Depence</label> 
-<progress  id="il" value="<?= $pd ?>" max="100"></progress>  
 </form>
-</section>
 </FIeldset>
 
 </body>
